@@ -281,17 +281,6 @@ export default function ProductCard({
           </div>
         </div>
 
-        {/* Mobile Add to Cart - Always visible on mobile */}
-        {showAddToCart && !isOutOfStock && (
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full py-2.5 sm:py-3 bg-black text-white rounded-xl font-semibold text-sm shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-black/30 transition-all flex items-center justify-center gap-2 mt-3 sm:hidden"
-          >
-            <ShoppingCart size={16} />
-            Add to Cart
-          </motion.button>
-        )}
       </div>
     </motion.div>
   );

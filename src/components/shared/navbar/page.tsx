@@ -54,9 +54,9 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const cartCount = useCartStore((state) => state.getItemCount());
 
-  const recentSearches = ["Nike Air Max", "Running shoes", "Black sneakers"];
   const trendingSearches = ["Running Shoes", "Summer Collection", "New Arrivals", "Best Sellers"];
   const categories = [
     { name: "Running", count: 245 },
@@ -83,6 +83,39 @@ export default function Navbar() {
     };
   }, [open]);
 
+  // Load recent searches from localStorage on mount
+  useEffect(() => {
+    const savedSearches = localStorage.getItem("recentSearches");
+    if (savedSearches) {
+      try {
+        setRecentSearches(JSON.parse(savedSearches));
+      } catch (error) {
+        console.error("Failed to parse recent searches:", error);
+      }
+    }
+  }, []);
+
+  // Save search to recent searches
+  const saveRecentSearch = (searchTerm: string) => {
+    if (!searchTerm.trim()) return;
+    
+    setRecentSearches((prev) => {
+      const filtered = prev.filter((s) => s.toLowerCase() !== searchTerm.toLowerCase());
+      const updated = [searchTerm, ...filtered].slice(0, 5);
+      localStorage.setItem("recentSearches", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // Handle search submission
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      saveRecentSearch(searchQuery);
+      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+    }
+  };
+
   return (
     <>
       <header
@@ -94,37 +127,39 @@ export default function Navbar() {
       >
         <Container className="flex items-center justify-between h-16 sm:h-20 md:h-24">
           {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3"
-          >
-            <div className="relative">
-              <motion.div
-                animate={{
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-full blur-xl opacity-20"
-              />
-              <div className="relative w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-black to-gray-800 rounded-xl flex items-center justify-center shadow-lg">
-                <Sparkles size={20} className="text-white sm:block hidden" />
-                <Sparkles size={16} className="text-white block sm:hidden" />
+          <Link href="/">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3"
+            >
+              <div className="relative">
+                <motion.div
+                  animate={{
+                    rotate: [0, 360],
+                  }}
+                  transition={{
+                    duration: 20,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                  className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-full blur-xl opacity-20"
+                />
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-black to-gray-800 rounded-xl flex items-center justify-center shadow-lg">
+                  <Sparkles size={20} className="text-white sm:block hidden" />
+                  <Sparkles size={16} className="text-white block sm:hidden" />
+                </div>
               </div>
-            </div>
-            <div>
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-black via-gray-800 to-gray-600 bg-clip-text text-transparent">
-                LUXE
+              <div>
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-black via-gray-800 to-gray-600 bg-clip-text text-transparent">
+                  LUXE
+                </div>
+                <div className="text-[10px] sm:text-xs font-medium text-gray-500 tracking-widest uppercase hidden sm:block">
+                  Premium Footwear
+                </div>
               </div>
-              <div className="text-[10px] sm:text-xs font-medium text-gray-500 tracking-widest uppercase hidden sm:block">
-                Premium Footwear
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex gap-1">
@@ -244,23 +279,25 @@ export default function Navbar() {
               {/* Menu Header */}
               <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-gray-100 z-10">
                 <div className="p-4 sm:p-6 flex items-center justify-between">
-                  <div>
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent"
-                    >
-                      LUXE
-                    </motion.div>
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.1 }}
-                      className="text-xs sm:text-sm text-gray-500 mt-1"
-                    >
-                      Premium Footwear
-                    </motion.p>
-                  </div>
+                  <Link href="/" onClick={() => setOpen(false)}>
+                    <div>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent"
+                      >
+                        LUXE
+                      </motion.div>
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-xs sm:text-sm text-gray-500 mt-1"
+                      >
+                        Premium Footwear
+                      </motion.p>
+                    </div>
+                  </Link>
                   <motion.button
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
@@ -309,20 +346,23 @@ export default function Navbar() {
 
               {/* Search Bar */}
               <div className="px-4 sm:px-6 py-4 sm:py-5">
-                <motion.div
+                <motion.form
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
+                  onSubmit={handleSearchSubmit}
                   className="relative"
                 >
                   <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 sm:block hidden" size={18} />
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 block sm:hidden" size={16} />
                   <input
                     type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search products..."
                     className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:bg-white transition-all border border-transparent focus:border-gray-200"
                   />
-                </motion.div>
+                </motion.form>
               </div>
 
               {/* Menu Links */}
@@ -500,7 +540,7 @@ export default function Navbar() {
                     <X size={22} className="text-gray-700 sm:block hidden" />
                     <X size={18} className="text-gray-700 block sm:hidden" />
                   </motion.button>
-                  <div className="flex-1 relative">
+                  <form onSubmit={handleSearchSubmit} className="flex-1 relative">
                     <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 sm:block hidden" size={18} />
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 block sm:hidden" size={16} />
                     <input
@@ -511,7 +551,7 @@ export default function Navbar() {
                       className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-100 rounded-2xl text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:bg-white transition-all border border-transparent focus:border-gray-200"
                       autoFocus
                     />
-                  </div>
+                  </form>
                 </div>
 
                 {!searchQuery && (
@@ -519,17 +559,31 @@ export default function Navbar() {
                     {/* Recent Searches */}
                     {recentSearches.length > 0 && (
                       <div className="mb-4 sm:mb-6">
-                        <h3 className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
-                          <Clock size={14} className="sm:block hidden" />
-                          <Clock size={12} className="block sm:hidden" />
-                          Recent Searches
-                        </h3>
+                        <div className="flex items-center justify-between mb-2 sm:mb-3">
+                          <h3 className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                            <Clock size={14} className="sm:block hidden" />
+                            <Clock size={12} className="block sm:hidden" />
+                            Recent Searches
+                          </h3>
+                          <button
+                            onClick={() => {
+                              setRecentSearches([]);
+                              localStorage.removeItem("recentSearches");
+                            }}
+                            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                          >
+                            Clear
+                          </button>
+                        </div>
                         <div className="flex flex-wrap gap-1.5 sm:gap-2">
                           {recentSearches.map((search) => (
                             <Link
                               key={search}
                               href={`/search?q=${encodeURIComponent(search)}`}
-                              onClick={() => setSearchOpen(false)}
+                              onClick={() => {
+                                saveRecentSearch(search);
+                                setSearchOpen(false);
+                              }}
                               className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-200 transition-colors"
                             >
                               {search}
