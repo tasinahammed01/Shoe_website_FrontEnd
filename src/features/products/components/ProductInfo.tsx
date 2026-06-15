@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Shield, Truck, RotateCcw, Heart, Share2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Product } from "../types";
 import ProductRating from "./ProductRating";
 import ProductPrice from "./ProductPrice";
@@ -9,6 +11,8 @@ import QuantitySelector from "./QuantitySelector";
 import ColorSelector from "./ColorSelector";
 import SizeSelector from "./SizeSelector";
 import Button from "@/components/ui/Button";
+import { useCartStore } from "@/features/cart/store/cart-store";
+import toast from "react-hot-toast";
 
 interface ProductInfoProps {
   product: Product;
@@ -16,6 +20,68 @@ interface ProductInfoProps {
 }
 
 export default function ProductInfo({ product, className = "" }: ProductInfoProps) {
+  const router = useRouter();
+  const addItem = useCartStore((state) => state.addItem);
+  const isInCart = useCartStore((state) => state.isInCart);
+  
+  const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name || "");
+  const [selectedSize, setSelectedSize] = useState(product.sizes[0]?.name || "");
+  const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const selectedColorObj = product.colors.find(c => c.name === selectedColor) || product.colors[0];
+  const selectedSizeObj = product.sizes.find(s => s.name === selectedSize) || product.sizes[0];
+
+  const handleAddToCart = () => {
+    if (!selectedColorObj || !selectedSizeObj) {
+      toast.error("Please select color and size");
+      return;
+    }
+
+    setIsAdding(true);
+    addItem(product, selectedColorObj, selectedSize, quantity);
+    
+    toast.success(`Added ${quantity} ${product.name} to cart`, {
+      position: "bottom-center",
+      duration: 2000,
+    });
+
+    setIsAdding(false);
+  };
+
+  const handleBuyNow = () => {
+    if (!selectedColorObj || !selectedSizeObj) {
+      toast.error("Please select color and size");
+      return;
+    }
+
+    setIsAdding(true);
+    addItem(product, selectedColorObj, selectedSize, quantity);
+    
+    toast.success(`Added ${quantity} ${product.name} to cart`, {
+      position: "bottom-center",
+      duration: 1500,
+    });
+
+    setTimeout(() => {
+      router.push("/checkout");
+    }, 500);
+
+    setIsAdding(false);
+  };
+
+  const handleColorChange = (colorName: string) => {
+    setSelectedColor(colorName);
+  };
+
+  const handleSizeChange = (sizeName: string) => {
+    setSelectedSize(sizeName);
+  };
+
+  const handleQuantityChange = (newQuantity: number) => {
+    setQuantity(newQuantity);
+  };
+
   return (
     <div className={`space-y-8 ${className}`}>
       {/* Category Badge */}
@@ -93,8 +159,12 @@ export default function ProductInfo({ product, className = "" }: ProductInfoProp
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <p className="font-semibold mb-3">Color: <span className="font-normal text-gray-600">{product.colors[0].name}</span></p>
-          <ColorSelector colors={product.colors} />
+          <p className="font-semibold mb-3">Color: <span className="font-normal text-gray-600">{selectedColor}</span></p>
+          <ColorSelector 
+            colors={product.colors} 
+            selected={selectedColor}
+            onChange={handleColorChange}
+          />
         </motion.div>
       )}
 
@@ -106,7 +176,11 @@ export default function ProductInfo({ product, className = "" }: ProductInfoProp
           transition={{ delay: 0.7 }}
         >
           <p className="font-semibold mb-3">Size</p>
-          <SizeSelector sizes={product.sizes} />
+          <SizeSelector 
+            sizes={product.sizes} 
+            selected={selectedSize}
+            onChange={handleSizeChange}
+          />
         </motion.div>
       )}
 
@@ -117,7 +191,12 @@ export default function ProductInfo({ product, className = "" }: ProductInfoProp
         transition={{ delay: 0.8 }}
       >
         <p className="font-semibold mb-3">Quantity</p>
-        <QuantitySelector />
+        <QuantitySelector 
+          initial={quantity}
+          min={1}
+          max={product.stock}
+          onChange={handleQuantityChange}
+        />
       </motion.div>
 
       {/* Action Buttons */}
@@ -127,10 +206,21 @@ export default function ProductInfo({ product, className = "" }: ProductInfoProp
         transition={{ delay: 0.9 }}
         className="flex flex-col sm:flex-row gap-4"
       >
-        <Button className="flex-1 py-4 text-lg">
+        <Button 
+          className="flex-1 py-4 text-lg"
+          onClick={handleAddToCart}
+          disabled={isAdding || product.stock === 0}
+          loading={isAdding}
+        >
           Add to Cart
         </Button>
-        <Button variant="outline" className="flex-1 py-4 text-lg border-2">
+        <Button 
+          variant="outline" 
+          className="flex-1 py-4 text-lg border-2"
+          onClick={handleBuyNow}
+          disabled={isAdding || product.stock === 0}
+          loading={isAdding}
+        >
           Buy Now
         </Button>
       </motion.div>

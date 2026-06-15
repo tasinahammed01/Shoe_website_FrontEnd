@@ -26,6 +26,7 @@ import {
   Star,
 } from "lucide-react";
 import Container from "@/components/shared/container/container";
+import { useCartStore } from "@/features/cart/store/cart-store";
 
 const links = [
   { label: "Home", icon: Home, href: "/" },
@@ -53,7 +54,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [cartCount, setCartCount] = useState(2);
+  const cartCount = useCartStore((state) => state.getItemCount());
 
   const recentSearches = ["Nike Air Max", "Running shoes", "Black sneakers"];
   const trendingSearches = ["Running Shoes", "Summer Collection", "New Arrivals", "Best Sellers"];
@@ -85,9 +86,9 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-50 transition-all duration-500 ${
+        className={`fixed top-1 left-2 right-2 sm:top-2 sm:left-4 sm:right-4 z-50 transition-all duration-500 ${
           scrolled
-            ? "top-1 sm:top-2 backdrop-blur-2xl bg-white/70 shadow-2xl shadow-black/10 border border-white/50 rounded-2xl"
+            ? "top-0 sm:top-1 backdrop-blur-2xl bg-white/70 shadow-2xl shadow-black/10 border border-white/50 rounded-2xl"
             : "backdrop-blur-xl bg-white/80 shadow-xl shadow-black/5 border border-white/30 rounded-2xl"
         }`}
       >

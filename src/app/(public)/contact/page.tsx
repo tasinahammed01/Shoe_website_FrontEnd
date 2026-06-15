@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Phone, MessageCircle, MapPin, Share2, Send, Clock, Shield, CheckCircle } from "lucide-react";
-import Container from "@/components/layout/Container";
-import PageHeader from "@/components/layout/PageHeader";
+import { Mail, Phone, MessageCircle, MapPin, Share2, Send, Clock, Shield, CheckCircle, MessageSquare } from "lucide-react";
+import Container from "@/components/shared/container/container";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
@@ -77,17 +76,31 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-gray-900 to-black text-white py-20 md:py-32">
+      {/* Hero Section - Match New Arrivals/Best Sellers Style */}
+      <section className="relative bg-gradient-to-br from-zinc-950 via-black to-zinc-900 text-white py-24 sm:py-32 md:py-40">
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5" />
         <Container>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl"
+            transition={{ duration: 0.8 }}
+            className="relative z-10 text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">Let's Connect</h1>
-            <p className="text-xl text-gray-300 mb-8">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full mb-8"
+            >
+              <MessageSquare size={14} className="text-white/80" />
+              <span className="text-xs font-semibold tracking-widest uppercase text-white/90">Get in Touch</span>
+            </motion.div>
+            
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
+              Contact Us
+            </h1>
+            
+            <p className="text-lg sm:text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto mb-12 leading-relaxed">
               We're here to help you find the perfect pair. Reach out to our team for any questions or assistance.
             </p>
           </motion.div>

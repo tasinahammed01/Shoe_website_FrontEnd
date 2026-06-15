@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Check, Truck, Shield, Percent } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCartStore } from "../store/cart-store";
 import { useState } from "react";
 
@@ -14,6 +15,7 @@ export default function CartSummary({
   isDrawer = false,
   onCheckout,
 }: CartSummaryProps) {
+  const router = useRouter();
   const { getSubtotal, getTotal, getItemCount, clearCart } = useCartStore();
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
@@ -33,6 +35,9 @@ export default function CartSummary({
 
   const handleCheckout = () => {
     onCheckout?.();
+    if (!isDrawer) {
+      router.push("/checkout");
+    }
   };
 
   return (
