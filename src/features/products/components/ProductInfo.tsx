@@ -8,7 +8,7 @@ import ProductPrice from "./ProductPrice";
 import QuantitySelector from "./QuantitySelector";
 import ColorSelector from "./ColorSelector";
 import SizeSelector from "./SizeSelector";
-import Button from "@/components/ui/button/page";
+import Button from "@/components/ui/Button";
 
 interface ProductInfoProps {
   product: Product;

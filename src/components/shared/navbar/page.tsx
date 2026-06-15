@@ -12,7 +12,6 @@ import {
   X,
   Home,
   ShoppingBag,
-  Grid3x3,
   Sparkles,
   TrendingUp,
   Tag,
@@ -24,13 +23,15 @@ import {
   Shield,
   Truck,
   RotateCcw,
+  Star,
 } from "lucide-react";
 import Container from "@/components/shared/container/container";
 
 const links = [
   { label: "Home", icon: Home, href: "/" },
   { label: "Shop", icon: ShoppingBag, href: "/shop" },
-  { label: "Offers", icon: Tag, href: "/offers" },
+  { label: "New Arrivals", icon: Sparkles, href: "/new-arrivals" },
+  { label: "Best Sellers", icon: TrendingUp, href: "/best-sellers" },
   { label: "Contact", icon: MessageCircle, href: "/contact" },
 ];
 
@@ -84,56 +85,88 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        className={`fixed top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-50 transition-all duration-500 ${
           scrolled
-            ? "backdrop-blur-xl bg-white/80 shadow-2xl shadow-black/10 border border-white/30"
-            : "bg-white/95 backdrop-blur-md border-b border-gray-100"
+            ? "top-1 sm:top-2 backdrop-blur-2xl bg-white/70 shadow-2xl shadow-black/10 border border-white/50 rounded-2xl"
+            : "backdrop-blur-xl bg-white/80 shadow-xl shadow-black/5 border border-white/30 rounded-2xl"
         }`}
       >
-        <Container className="flex items-center justify-between py-5 md:py-6">
+        <Container className="flex items-center justify-between h-16 sm:h-20 md:h-24">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-black via-gray-800 to-gray-600 bg-clip-text text-transparent"
+            className="flex items-center gap-3"
           >
-            LUXE
+            <div className="relative">
+              <motion.div
+                animate={{
+                  rotate: [0, 360],
+                }}
+                transition={{
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-full blur-xl opacity-20"
+              />
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-black to-gray-800 rounded-xl flex items-center justify-center shadow-lg">
+                <Sparkles size={20} className="text-white sm:block hidden" />
+                <Sparkles size={16} className="text-white block sm:hidden" />
+              </div>
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-black via-gray-800 to-gray-600 bg-clip-text text-transparent">
+                LUXE
+              </div>
+              <div className="text-[10px] sm:text-xs font-medium text-gray-500 tracking-widest uppercase hidden sm:block">
+                Premium Footwear
+              </div>
+            </div>
           </motion.div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-8 text-sm font-medium">
+          <nav className="hidden lg:flex gap-1">
             {links.map((link, index) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="hover:text-black/60 transition-colors relative group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full" />
+              <Link key={link.label} href={link.href}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative px-6 py-3 text-sm font-medium text-gray-700 hover:text-black transition-colors group"
+                >
+                  {link.label}
+                  <motion.span
+                    initial={{ width: 0 }}
+                    whileHover={{ width: "100%" }}
+                    className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-black to-gray-600 rounded-full"
+                  />
+                </motion.div>
               </Link>
             ))}
           </nav>
 
           {/* Icons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2.5 rounded-full hover:bg-black/5 transition-colors"
+              className="p-2 sm:p-3 rounded-xl hover:bg-black/5 transition-colors relative group"
               aria-label="Search"
               onClick={() => setSearchOpen(true)}
             >
-              <Search size={20} className="text-gray-700" />
+              <Search size={18} className="text-gray-700 group-hover:text-black transition-colors sm:block hidden" />
+              <Search size={16} className="text-gray-700 group-hover:text-black transition-colors block sm:hidden" />
             </motion.button>
 
             <Link href="/wishlist">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2.5 rounded-full hover:bg-black/5 transition-colors relative"
+                className="p-2 sm:p-3 rounded-xl hover:bg-black/5 transition-colors relative group"
                 aria-label="Wishlist"
               >
-                <Heart size={20} className="text-gray-700" />
+                <Heart size={18} className="text-gray-700 group-hover:text-red-500 transition-colors sm:block hidden" />
+                <Heart size={16} className="text-gray-700 group-hover:text-red-500 transition-colors block sm:hidden" />
               </motion.button>
             </Link>
 
@@ -141,16 +174,17 @@ export default function Navbar() {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2.5 rounded-full hover:bg-black/5 transition-colors relative"
+                className="p-2 sm:p-3 rounded-xl hover:bg-black/5 transition-colors relative group"
                 aria-label="Cart"
               >
-                <ShoppingCart size={20} className="text-gray-700" />
+                <ShoppingCart size={18} className="text-gray-700 group-hover:text-black transition-colors sm:block hidden" />
+                <ShoppingCart size={16} className="text-gray-700 group-hover:text-black transition-colors block sm:hidden" />
                 {cartCount > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     whileHover={{ scale: 1.2 }}
-                    className="absolute -top-1 -right-1 text-[10px] font-semibold bg-gradient-to-r from-black to-gray-700 text-white px-1.5 py-0.5 rounded-full shadow-lg"
+                    className="absolute -top-1 -right-1 text-[10px] font-semibold bg-gradient-to-r from-black to-gray-700 text-white px-2 py-0.5 rounded-full shadow-lg"
                   >
                     {cartCount}
                   </motion.span>
@@ -162,10 +196,10 @@ export default function Navbar() {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2.5 rounded-full hover:bg-black/5 transition-colors hidden sm:block"
+                className="p-3 rounded-xl hover:bg-black/5 transition-colors relative group hidden md:block"
                 aria-label="Profile"
               >
-                <User size={20} className="text-gray-700" />
+                <User size={20} className="text-gray-700 group-hover:text-black transition-colors" />
               </motion.button>
             </Link>
 
@@ -173,11 +207,12 @@ export default function Navbar() {
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="md:hidden p-2.5 rounded-full hover:bg-black/5 transition-colors"
+              className="lg:hidden p-2 sm:p-3 rounded-xl hover:bg-black/5 transition-colors"
               onClick={() => setOpen(true)}
               aria-label="Open menu"
             >
-              <Menu size={24} className="text-gray-700" />
+              <Menu size={22} className="text-gray-700 sm:block hidden" />
+              <Menu size={18} className="text-gray-700 block sm:hidden" />
             </motion.button>
           </div>
         </Container>
@@ -193,7 +228,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 md:hidden"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 md:hidden"
               onClick={() => setOpen(false)}
             />
 
@@ -203,16 +238,16 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 w-full max-w-md bg-white z-50 md:hidden overflow-y-auto shadow-2xl shadow-black/20"
+              className="fixed inset-y-0 right-0 w-full sm:max-w-md bg-white z-50 md:hidden overflow-y-auto shadow-2xl shadow-black/20"
             >
               {/* Menu Header */}
               <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-gray-100 z-10">
-                <div className="p-6 flex items-center justify-between">
+                <div className="p-4 sm:p-6 flex items-center justify-between">
                   <div>
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="text-3xl font-bold tracking-tight bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent"
+                      className="text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent"
                     >
                       LUXE
                     </motion.div>
@@ -220,7 +255,7 @@ export default function Navbar() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.1 }}
-                      className="text-sm text-gray-500 mt-1"
+                      className="text-xs sm:text-sm text-gray-500 mt-1"
                     >
                       Premium Footwear
                     </motion.p>
@@ -229,39 +264,40 @@ export default function Navbar() {
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setOpen(false)}
-                    className="p-3 rounded-full hover:bg-black/5 transition-colors"
+                    className="p-2 sm:p-3 rounded-full hover:bg-black/5 transition-colors"
                     aria-label="Close menu"
                   >
-                    <X size={24} className="text-gray-700" />
+                    <X size={22} className="text-gray-700 sm:block hidden" />
+                    <X size={18} className="text-gray-700 block sm:hidden" />
                   </motion.button>
                 </div>
 
                 {/* User Greeting */}
-                <div className="px-6 pb-6">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6">
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 }}
-                    className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-5 border border-gray-200"
+                    className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-4 sm:p-5 border border-gray-200"
                   >
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                    <p className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                       Welcome Back
                     </p>
-                    <p className="text-xl font-semibold text-gray-900 mb-3">
+                    <p className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">
                       Hello, Tanjid
                     </p>
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 sm:gap-3">
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex-1 bg-black text-white py-2.5 rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
+                        className="flex-1 bg-black text-white py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:bg-gray-800 transition-colors"
                       >
                         Sign In
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex-1 bg-white text-black border border-gray-300 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+                        className="flex-1 bg-white text-black border border-gray-300 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:bg-gray-50 transition-colors"
                       >
                         Register
                       </motion.button>
@@ -271,29 +307,30 @@ export default function Navbar() {
               </div>
 
               {/* Search Bar */}
-              <div className="px-6 py-5">
+              <div className="px-4 sm:px-6 py-4 sm:py-5">
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                   className="relative"
                 >
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                  <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 sm:block hidden" size={18} />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 block sm:hidden" size={16} />
                   <input
                     type="text"
                     placeholder="Search products..."
-                    className="w-full pl-12 pr-4 py-4 bg-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:bg-white transition-all border border-transparent focus:border-gray-200"
+                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:bg-white transition-all border border-transparent focus:border-gray-200"
                   />
                 </motion.div>
               </div>
 
               {/* Menu Links */}
-              <div className="px-6 pb-5">
+              <div className="px-4 sm:px-6 pb-4 sm:pb-5">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.25 }}
-                  className="space-y-2"
+                  className="space-y-1 sm:space-y-2"
                 >
                   {links.map((link, index) => {
                     const Icon = link.icon;
@@ -309,13 +346,15 @@ export default function Navbar() {
                           transition={{ delay: 0.3 + index * 0.05 }}
                           whileHover={{ x: 5 }}
                           whileTap={{ scale: 0.98 }}
-                          className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-all group border border-transparent hover:border-gray-100"
+                          className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl hover:bg-gray-50 transition-all group border border-transparent hover:border-gray-100"
                         >
-                          <div className="p-2.5 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-black group-hover:to-gray-700 transition-all">
-                            <Icon size={20} className="text-gray-700 group-hover:text-white transition-colors" />
+                          <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-black group-hover:to-gray-700 transition-all">
+                            <Icon size={18} className="text-gray-700 group-hover:text-white transition-colors sm:block hidden" />
+                            <Icon size={16} className="text-gray-700 group-hover:text-white transition-colors block sm:hidden" />
                           </div>
-                          <span className="flex-1 font-medium text-gray-900">{link.label}</span>
-                          <ChevronRight size={18} className="text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all" />
+                          <span className="flex-1 text-sm sm:font-medium text-gray-900">{link.label}</span>
+                          <ChevronRight size={16} className="text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all sm:block hidden" />
+                          <ChevronRight size={14} className="text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all block sm:hidden" />
                         </motion.div>
                       </Link>
                     );
@@ -397,7 +436,7 @@ export default function Navbar() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.95 }}
-                  className="flex justify-around pt-4 border-t border-gray-100"
+                  className="flex justify-around pt-3 sm:pt-4 border-t border-gray-100"
                 >
                   {trustBadges.map((badge, index) => {
                     const Icon = badge.icon;
@@ -407,12 +446,13 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1 + index * 0.1 }}
-                        className="flex flex-col items-center gap-2"
+                        className="flex flex-col items-center gap-1.5 sm:gap-2"
                       >
-                        <div className="p-2.5 rounded-xl bg-gray-50">
-                          <Icon size={20} className="text-gray-700" />
+                        <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50">
+                          <Icon size={18} className="text-gray-700 sm:block hidden" />
+                          <Icon size={16} className="text-gray-700 block sm:hidden" />
                         </div>
-                        <span className="text-[10px] font-medium text-gray-600 text-center">
+                        <span className="text-[9px] sm:text-[10px] font-medium text-gray-600 text-center leading-tight">
                           {badge.label}
                         </span>
                       </motion.div>
@@ -447,8 +487,8 @@ export default function Navbar() {
               transition={{ duration: 0.3 }}
               className="fixed top-0 left-0 right-0 bg-white z-50 shadow-2xl"
             >
-              <Container className="py-6">
-                <div className="flex items-center gap-4">
+              <Container className="py-4 sm:py-6">
+                <div className="flex items-center gap-3 sm:gap-4">
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
@@ -456,37 +496,40 @@ export default function Navbar() {
                     className="p-2 rounded-full hover:bg-black/5 transition-colors"
                     aria-label="Close search"
                   >
-                    <X size={24} className="text-gray-700" />
+                    <X size={22} className="text-gray-700 sm:block hidden" />
+                    <X size={18} className="text-gray-700 block sm:hidden" />
                   </motion.button>
                   <div className="flex-1 relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 sm:block hidden" size={18} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 block sm:hidden" size={16} />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search for shoes, brands, categories..."
-                      className="w-full pl-12 pr-4 py-4 bg-gray-100 rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:bg-white transition-all border border-transparent focus:border-gray-200"
+                      className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-100 rounded-2xl text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-black/10 focus:bg-white transition-all border border-transparent focus:border-gray-200"
                       autoFocus
                     />
                   </div>
                 </div>
 
                 {!searchQuery && (
-                  <div className="mt-8">
+                  <div className="mt-6 sm:mt-8">
                     {/* Recent Searches */}
                     {recentSearches.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                          <Clock size={16} />
+                      <div className="mb-4 sm:mb-6">
+                        <h3 className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
+                          <Clock size={14} className="sm:block hidden" />
+                          <Clock size={12} className="block sm:hidden" />
                           Recent Searches
                         </h3>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
                           {recentSearches.map((search) => (
                             <Link
                               key={search}
                               href={`/search?q=${encodeURIComponent(search)}`}
                               onClick={() => setSearchOpen(false)}
-                              className="px-4 py-2 bg-gray-100 rounded-full text-sm text-gray-700 hover:bg-gray-200 transition-colors"
+                              className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-200 transition-colors"
                             >
                               {search}
                             </Link>
@@ -496,18 +539,19 @@ export default function Navbar() {
                     )}
 
                     {/* Trending Searches */}
-                    <div className="mb-6">
-                      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                        <TrendingUp size={16} />
+                    <div className="mb-4 sm:mb-6">
+                      <h3 className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
+                        <TrendingUp size={14} className="sm:block hidden" />
+                        <TrendingUp size={12} className="block sm:hidden" />
                         Trending Searches
                       </h3>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
                         {trendingSearches.map((search) => (
                           <Link
                             key={search}
                             href={`/search?q=${encodeURIComponent(search)}`}
                             onClick={() => setSearchOpen(false)}
-                            className="px-4 py-2 bg-gray-100 rounded-full text-sm text-gray-700 hover:bg-gray-200 transition-colors"
+                            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-200 transition-colors"
                           >
                             {search}
                           </Link>
@@ -517,19 +561,19 @@ export default function Navbar() {
 
                     {/* Categories */}
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                      <h3 className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2 sm:mb-3">
                         Browse by Category
                       </h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
                         {categories.map((category) => (
                           <Link
                             key={category.name}
                             href={`/search?q=${encodeURIComponent(category.name)}`}
                             onClick={() => setSearchOpen(false)}
-                            className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all text-center border border-gray-100"
+                            className="p-3 sm:p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all text-center border border-gray-100"
                           >
-                            <div className="font-medium text-gray-900">{category.name}</div>
-                            <div className="text-sm text-gray-500">{category.count} products</div>
+                            <div className="text-sm sm:font-medium text-gray-900">{category.name}</div>
+                            <div className="text-xs sm:text-sm text-gray-500">{category.count} products</div>
                           </Link>
                         ))}
                       </div>

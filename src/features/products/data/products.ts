@@ -31,8 +31,8 @@ export async function getBestSellers(): Promise<Product[]> {
 export const products: Product[] = [
   {
     id: "1",
-    slug: "air-max-premium",
-    name: "Air Max Premium",
+    slug: "nike-air-max-pulse",
+    name: "Nike Air Max Pulse",
     description: "Experience unparalleled comfort with our Air Max Premium. Featuring advanced cushioning technology and premium materials, these shoes are designed for those who demand excellence in every step.",
     shortDescription: "Premium running shoes with advanced cushioning technology",
     price: 189,
@@ -103,8 +103,8 @@ export const products: Product[] = [
   },
   {
     id: "3",
-    slug: "classic-leather",
-    name: "Classic Leather",
+    slug: "asics-gel-kayano-31",
+    name: "ASICS Gel-Kayano 31",
     description: "Timeless elegance meets modern comfort. Our Classic Leather collection features premium leather construction with cushioned insoles, perfect for everyday wear.",
     shortDescription: "Premium leather casual shoes",
     price: 159,

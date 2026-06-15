@@ -8,6 +8,7 @@ interface ProductGridProps {
   viewMode?: "grid" | "list";
   showWishlist?: boolean;
   showAddToCart?: boolean;
+  priority?: boolean;
   className?: string;
 }
 
@@ -16,6 +17,7 @@ export default function ProductGrid({
   viewMode = "grid",
   showWishlist = true,
   showAddToCart = true,
+  priority = false,
   className = "",
 }: ProductGridProps) {
   const gridCols = viewMode === "grid"
@@ -23,14 +25,15 @@ export default function ProductGrid({
     : "grid-cols-1";
 
   return (
-    <div className={`grid gap-6 ${gridCols} ${className}`}>
-      {products.map((product) => (
+    <div className={`grid gap-4 sm:gap-6 ${gridCols} ${className}`}>
+      {products.map((product, index) => (
         <ProductCard
           key={product.id}
           product={product}
           viewMode={viewMode}
           showWishlist={showWishlist}
           showAddToCart={showAddToCart}
+          priority={priority && index < 4}
         />
       ))}
     </div>

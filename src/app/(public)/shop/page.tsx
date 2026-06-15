@@ -1,87 +1,48 @@
 "use client";
 
-
-
 import { useMemo, useState, useEffect } from "react";
-
-import ProductGrid from "@/features/products/components/ProductGrid";
-
+import ProductGrid from "@/components/ecommerce/ProductGrid";
 import { getProducts } from "@/features/products/data/products";
-
 import { useShopFilters } from "@/store/shopFilters";
-
 import ShopHero from "@/components/shop/ShopHero";
-
 import FilterSidebar from "@/components/shop/FilterSidebar";
-
 import FilterDrawer from "@/components/shop/FilterDrawer";
-
 import ProductToolbar from "@/components/shop/ProductToolbar";
-
 import Pagination from "@/components/shop/Pagination";
-
 import TrustIndicators from "@/components/shop/TrustIndicators";
-
 import { Product } from "@/features/products/types";
 
-
-
 export default function ShopPage() {
-
   const [products, setProducts] = useState<Product[]>([]);
-
   const [loading, setLoading] = useState(true);
 
   const {
-
     searchQuery,
-
     selectedCategory,
-
     selectedSort,
-
     selectedPriceRange,
-
     selectedRating,
-
     selectedColors,
-
     selectedTags,
-
     viewMode,
-
     currentPage,
-
     itemsPerPage,
-
   } = useShopFilters();
 
-
-
   useEffect(() => {
-
     async function fetchProductsData() {
-
       try {
-
         const productsData = await getProducts();
-
+        console.log('Fetched products:', productsData);
         setProducts(productsData);
-
       } catch (error) {
-
         console.error('Error fetching products:', error);
-
       } finally {
-
         setLoading(false);
-
       }
-
     }
 
     fetchProductsData();
-
   }, []);
 
 
@@ -90,7 +51,7 @@ export default function ShopPage() {
 
   const filteredProducts = useMemo(() => {
 
-    return products.filter((product) => {
+    const filtered = products.filter((product) => {
 
       // Category filter
 
@@ -162,7 +123,12 @@ export default function ShopPage() {
 
     });
 
+    console.log('Filtered products:', filtered.length);
+    return filtered;
+
   }, [
+
+    products,
 
     searchQuery,
 
@@ -186,7 +152,7 @@ export default function ShopPage() {
 
     const productsToSort = [...filteredProducts];
 
-    return productsToSort.sort((a, b) => {
+    const sorted = productsToSort.sort((a, b) => {
 
       switch (selectedSort) {
 
@@ -213,6 +179,8 @@ export default function ShopPage() {
       }
 
     });
+    console.log('Sorted products:', sorted.length);
+    return sorted;
 
   }, [filteredProducts, selectedSort]);
 
@@ -224,7 +192,9 @@ export default function ShopPage() {
 
     const startIndex = (currentPage - 1) * itemsPerPage;
 
-    return sortedProducts.slice(startIndex, startIndex + itemsPerPage);
+    const paginated = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
+    console.log('Paginated products:', paginated.length);
+    return paginated;
 
   }, [sortedProducts, currentPage, itemsPerPage]);
 
@@ -248,6 +218,18 @@ export default function ShopPage() {
 
     );
 
+  }
+
+  // Debug: Show if no products
+  if (products.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 text-xl font-bold">No products found</p>
+          <p className="text-gray-600">Check console for details</p>
+        </div>
+      </div>
+    );
   }
 
 

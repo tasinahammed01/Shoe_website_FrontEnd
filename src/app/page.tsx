@@ -1,51 +1,53 @@
 import ProductGrid from "@/components/ecommerce/ProductGrid";
 import ShopHero from "@/components/shop/ShopHero";
 import TrustIndicators from "@/components/shop/TrustIndicators";
-import { products } from "@/features/products/data/products";
+import FeaturedCategories from "@/components/shop/FeaturedCategories";
+import NewArrivals from "@/components/shop/NewArrivals";
+import CustomerReviews from "@/components/shop/CustomerReviews";
+import Newsletter from "@/components/shop/Newsletter";
+import { getFeaturedProducts, getBestSellers } from "@/features/products/data/products";
 
-export default function HomePage() {
-  const featuredProducts = products.filter(p => p.featured);
-  const newArrivals = products.filter(p => p.newArrival);
-  const bestSellers = products.filter(p => p.bestSeller);
+export default async function HomePage() {
+  const featuredProducts = await getFeaturedProducts();
+  const bestSellers = await getBestSellers();
 
   return (
     <div>
       {/* Hero Section */}
       <ShopHero />
 
-      {/* Trust Indicators */}
-      <TrustIndicators />
-
-      {/* Featured Products */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Featured Products</h2>
-          <p className="text-muted-foreground">Handpicked premium items for you</p>
-        </div>
-        <ProductGrid products={featuredProducts} />
-      </section>
-
-      {/* New Arrivals */}
-      {newArrivals.length > 0 && (
-        <section className="container mx-auto px-4 py-16">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-2">New Arrivals</h2>
-            <p className="text-muted-foreground">Fresh styles just landed</p>
-          </div>
-          <ProductGrid products={newArrivals} />
-        </section>
-      )}
+      {/* Featured Categories */}
+      <FeaturedCategories />
 
       {/* Best Sellers */}
       {bestSellers.length > 0 && (
-        <section className="container mx-auto px-4 py-16">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-2">Best Sellers</h2>
-            <p className="text-muted-foreground">Most loved by our customers</p>
+        <section className="py-16 sm:py-20 md:py-24 px-3 sm:px-6 lg:px-8 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
+                Best
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  {" "}Sellers
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600">Most loved by our customers</p>
+            </div>
+            <ProductGrid products={bestSellers} />
           </div>
-          <ProductGrid products={bestSellers} />
         </section>
       )}
+
+      {/* New Arrivals */}
+      <NewArrivals />
+
+      {/* Trust Indicators */}
+      <TrustIndicators />
+
+      {/* Customer Reviews */}
+      <CustomerReviews />
+
+      {/* Newsletter */}
+      <Newsletter />
     </div>
   );
 }

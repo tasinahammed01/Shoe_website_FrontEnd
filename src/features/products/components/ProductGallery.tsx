@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, ZoomIn, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 interface ProductGalleryProps {
   images: string[];
@@ -12,6 +13,7 @@ interface ProductGalleryProps {
 export default function ProductGallery({ images, className = "" }: ProductGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -36,14 +38,26 @@ export default function ProductGallery({ images, className = "" }: ProductGaller
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="w-full h-full flex items-center justify-center p-12 cursor-zoom-in"
+            className="w-full h-full cursor-zoom-in"
             onClick={() => setIsZoomed(!isZoomed)}
           >
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center">
-              <span className="text-gray-400 text-2xl font-semibold">
-                Product Image {currentIndex + 1}
-              </span>
-            </div>
+            {images[currentIndex] && !imageError ? (
+              <Image
+                src={images[currentIndex]}
+                alt={`Product image ${currentIndex + 1}`}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                className="object-cover"
+                onError={() => setImageError(true)}
+                priority={currentIndex === 0}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center">
+                <span className="text-gray-400 text-2xl font-semibold">
+                  Image not available
+                </span>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
 
@@ -80,20 +94,30 @@ export default function ProductGallery({ images, className = "" }: ProductGaller
       {/* Thumbnails */}
       {images.length > 1 && (
         <div className="flex gap-3 overflow-x-auto pb-2">
-          {images.map((_, index) => (
+          {images.map((image, index) => (
             <button
               key={index}
               onClick={() => handleThumbnailClick(index)}
-              className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+              className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all relative ${
                 index === currentIndex
                   ? "border-black"
                   : "border-gray-200 hover:border-gray-400"
               }`}
               aria-label={`View image ${index + 1}`}
             >
-              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <span className="text-gray-400 text-xs">{index + 1}</span>
-              </div>
+              {image ? (
+                <Image
+                  src={image}
+                  alt={`Thumbnail ${index + 1}`}
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                  <span className="text-gray-400 text-xs">{index + 1}</span>
+                </div>
+              )}
             </button>
           ))}
         </div>
