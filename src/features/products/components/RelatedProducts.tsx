@@ -1,6 +1,6 @@
 import { Product } from "../types";
-import ProductCard from "./ProductCard";
-import ProductGrid from "./ProductGrid";
+import ProductCard from "@/components/ecommerce/ProductCard";
+import ProductGrid from "@/components/ecommerce/ProductGrid";
 
 interface RelatedProductsProps {
   products: Product[];

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, Heart, Share2, Truck, Shield, RefreshCw } from "lucide-react";
 import AddToCartButton from "./AddToCartButton";
-import QuantitySelector from "./QuantitySelector";
+import QuantitySelector from "@/features/cart/components/QuantitySelector";
 import WishlistButton from "./WishlistButton";
 
 interface ProductActionsProps {
@@ -36,8 +36,8 @@ export default function ProductActions({
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
         <QuantitySelector
-          value={quantity}
-          onChange={setQuantity}
+          quantity={quantity}
+          onQuantityChange={setQuantity}
           min={1}
           max={stock}
         />
